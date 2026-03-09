@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Тюнинг Фургона</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #0d1117;
+            font-family: sans-serif;
+            color: white;
+        }
+
+        .container {
+            position: relative;
+            cursor: pointer;
+            width: fit-content;
+        }
+
+        .base-car {
+            max-width: 90vw;
+            display: block;
+        }
+
+        /* Слой покраски */
+        .color-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            
+            /* Используем маску */
+            -webkit-mask-image: url('data:image/png;base64,СЮДА_ВСТАВЬ_BASE64_MASK');
+            mask-image: url('data:image/png;base64,СЮДА_ВСТАВЬ_BASE64_MASK');
+            -webkit-mask-size: contain;
+            mask-size: contain;
+            -webkit-mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+
+            transition: background-color 0.3s ease;
+        }
+
+        .hint { margin-top: 20px; opacity: 0.7; }
+    </style>
+</head>
+<body>
+
+    <div class="container" onclick="nextColor()">
+        <img class="base-car" src="data:image/jpeg;base64,СЮДА_ВСТАВЬ_BASE64_CAR">
+        
+        <div id="paintLayer" class="color-overlay"></div>
+    </div>
+
+    <div class="hint">Нажми на фургон, чтобы изменить цвет</div>
+
+    <script>
+        function nextColor() {
+            const layer = document.getElementById('paintLayer');
+            const h = Math.floor(Math.random() * 360);
+            // Используем режим наложения hue для натуральности
+            layer.style.mixBlendMode = 'hue'; 
+            layer.style.backgroundColor = `hsl(${h}, 70%, 50%)`;
+        }
+        window.onload = nextColor;
+    </script>
+</body>
+</html>
