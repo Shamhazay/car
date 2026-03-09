@@ -7,7 +7,6 @@
         body {
             margin: 0;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
@@ -20,14 +19,18 @@
             position: relative;
             cursor: pointer;
             width: fit-content;
+            line-height: 0;
         }
 
+        /* Основное фото (база) */
         .base-car {
             max-width: 90vw;
+            height: auto;
             display: block;
+            z-index: 1;
         }
 
-        /* Слой покраски */
+        /* Слой покраски с использованием маски */
         .color-overlay {
             position: absolute;
             top: 0;
@@ -36,9 +39,9 @@
             height: 100%;
             z-index: 2;
             
-            /* Используем маску */
-            -webkit-mask-image: url('data:image/png;base64,СЮДА_ВСТАВЬ_BASE64_MASK');
-            mask-image: url('data:image/png;base64,СЮДА_ВСТАВЬ_BASE64_MASK');
+            /* Путь к маске PNG */
+            -webkit-mask-image: url('mask.png');
+            mask-image: url('mask.png');
             -webkit-mask-size: contain;
             mask-size: contain;
             -webkit-mask-repeat: no-repeat;
@@ -47,28 +50,50 @@
             transition: background-color 0.3s ease;
         }
 
-        .hint { margin-top: 20px; opacity: 0.7; }
+        /* Слой теней для реалистичности */
+        .shadows {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('mask.png') no-repeat center / contain;
+            /* Режим умножения накладывает тени маски на цвет */
+            mix-blend-mode: multiply;
+            opacity: 0.8;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        .hint {
+            position: absolute;
+            bottom: -40px;
+            width: 100%;
+            text-align: center;
+            opacity: 0.6;
+        }
     </style>
 </head>
 <body>
 
     <div class="container" onclick="nextColor()">
-        <img class="base-car" src="data:image/jpeg;base64,СЮДА_ВСТАВЬ_BASE64_CAR">
-        
+        <img class="base-car" src="car.jpg" alt="Car Base">
         <div id="paintLayer" class="color-overlay"></div>
+        <div class="shadows"></div>
+        <div class="hint">Нажми на фургон, чтобы изменить цвет</div>
     </div>
-
-    <div class="hint">Нажми на фургон, чтобы изменить цвет</div>
 
     <script>
         function nextColor() {
             const layer = document.getElementById('paintLayer');
+            // Используем HSL для более сочных и натуральных цветов
             const h = Math.floor(Math.random() * 360);
-            // Используем режим наложения hue для натуральности
-            layer.style.mixBlendMode = 'hue'; 
             layer.style.backgroundColor = `hsl(${h}, 70%, 50%)`;
         }
+        
+        // Первый цвет при загрузке
         window.onload = nextColor;
     </script>
+
 </body>
 </html>
